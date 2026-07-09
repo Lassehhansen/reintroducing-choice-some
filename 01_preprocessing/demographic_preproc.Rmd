@@ -1,0 +1,33 @@
+---
+title: "Untitled"
+output: html_document
+date: "2025-02-19"
+---
+
+```{r}
+demografi <- readxl::read_excel("../../../../../../Volumes/enheder/FORCE/FORCE Adfærd/Fastholdelse 2 (2024) (CNJ) /Data/060125/Til Lasse/Demografi_oversigt.xlsx")
+
+```
+
+```{r}
+demografi1 <- demografi %>%
+  mutate(ID = str_remove(ResponseId, "R_")) %>% select(ID, Deltageralder, Deltagerkøn, Deltagerregion)
+
+demografi_clean <- demografi1 %>%
+  rename(
+    ID = ID,
+    age = Deltageralder,
+    gender = Deltagerkøn,
+    region = Deltagerregion
+  ) %>%
+  mutate(
+    gender = tolower(gender),
+    gender = factor(gender, 
+                    levels = c("mand", "kvinde")),  # Convert to categorical variable
+    region = as.factor(region)   # Convert to categorical variable
+  ) %>% select(ID, age, gender, region)
+
+write_csv(demografi_clean, "../../data/demographic/demographic_data.csv")
+
+```
+
